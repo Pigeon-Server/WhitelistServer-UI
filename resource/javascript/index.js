@@ -1,4 +1,18 @@
 window.onload = function() {
+    //字数计算
+    const input_box = document.querySelector("#user_introduce");
+    const display_box = document.querySelector("#user_introduce_len");
+    input_box.addEventListener("input",()=>{
+        const value_length = input_box.value.replace(/[\r\n]/g,"").replace(/\ +/g,"").length;
+        display_box.innerHTML = value_length;
+        if (value_length >= 30 && value_length <= 300) {
+            display_box.style.color = "green";
+            input_box.classList.remove("is-invalid")
+        } else {
+            display_box.style.color = "red";
+            input_box.classList.add("is-invalid")
+        }
+    });
     //表单非空验证
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (() => {
