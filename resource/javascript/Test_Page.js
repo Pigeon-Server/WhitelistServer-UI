@@ -26,12 +26,13 @@ window.onload = function () {
     //     }
     // }
 
-    function randomString(e) {
-        e = e || 32;
+    // 随机字符串
+    function randomString(length) {
+        length = length || 32;
         var t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678",
             a = t.length,
             n = "";
-        for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+        for (i = 0; i < length; i++) n += t.charAt(Math.floor(Math.random() * a));
         return n
     }
 
@@ -50,7 +51,7 @@ window.onload = function () {
             // 通过调用 clipboardData 对象的 setData(format,data) 方法，设置相关文本
             // format 一个 DOMString 类型 表示要添加到 drag object 的拖动数据的类型
             // data 一个 DOMString 表示要添加到 drag object 的数据
-            clipboardData.setData('text/plain', "你在干什么？？？"+randomString(text.length))
+            clipboardData.setData('text/plain', "不允许复制哦~" + randomString(text.length) + "不允许复制哦~")
         }
     })
 
@@ -72,7 +73,7 @@ window.onload = function () {
                     .get("https://pigeon-server.cn:9000/api/test")
                     .catch(function (error){
                         console.log("[获取试题时发生严重错误]",error.message)
-                        alert("获取试题时发生严重错误")
+                        alert("获取试题失败")
                         location.reload();
                     })
                     .then(function (data){
