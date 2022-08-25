@@ -46,7 +46,7 @@ window.onload = function() {
                     .then(res=>{
                         window.grecaptcha.render("g-recaptcha", {
                             sitekey: res.data.reCAPTCHA_v2_key,
-                            callback: this.form["g-recaptcha-response"]
+                            callback: this.return_recaptcha_token
                         });
                     })
                     .catch(err=>{
@@ -54,6 +54,10 @@ window.onload = function() {
                         // alert("验证码加载失败")
                         // location.reload()
                     })
+            },
+            // reCAPTCHA 返回
+            return_recaptcha_token(token) {
+                this.form["g-recaptcha-response"] = token
             },
             // 个人信息-长度
             User_introduce() {
@@ -79,12 +83,8 @@ window.onload = function() {
                         }
                     }).then(response =>{
                         document.querySelector("#Error").style.display = "None"
-                        if (response.data.PlayerName == false) {
-                            this.verify_user_info.Game_name = true
-                            document.querySelector("#QQ_and_KOOK-form-alert").style.display = "None"
-                            dom.classList.remove("is-invalid");
-                        } else if (response.data.User == false) {
-                            this.verify_user_info.Username = ture
+                        if (response.data.return == false) {
+                            this.verify_user_info[ID] = true
                             document.querySelector("#QQ_and_KOOK-form-alert").style.display = "None"
                             dom.classList.remove("is-invalid");
                         } else {
