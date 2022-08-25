@@ -6,12 +6,12 @@
   <link rel="shortcut icon" href="resource/Web-Logo.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pigeon Server 白名单验证</title>
-  <!--  验证码  -->
-  <!--    <script src="https://www.google.com/recaptcha/api.js" async defer></script>-->
   <!-- 基础库导入 -->
+  <script src="./resource/lib/vue/vue.js"></script>
   <script src="./resource/lib/bootstrap/bootstrap.js"></script>
   <script src="./resource/lib/axios/axios.min.js"></script>
   <script src="./resource/lib/loading-animation/loading-animation.js"></script>
+  <script src="https://recaptcha.net/recaptcha/api.js" async></script>
   <link rel="stylesheet" href="./resource/lib/bootstrap/bootstrap.css" />
   <link rel="stylesheet" href="./resource/lib/loading-animation/loading-animation.css">
   <!-- 自定义 -->
@@ -30,7 +30,7 @@
     </div>
   </nav>
 </header>
-<main>
+<main id="index">
   <!--      主体-->
   <div class="Page-container">
     <!-- 单块 -->
@@ -41,10 +41,22 @@
       </div>
       <!-- 块容器 -->
       <div class="box-content">
+        <div class="alert alert-danger" id="Error" style="display: none" role="alert">
+          发生错误
+        </div>
+        <div class="alert alert-danger" id="g-recaptcha-Error" style="display: none" role="alert">
+          验证码加载失败
+        </div>
+        <div class="alert alert-danger" id="form_error" style="display: none" role="alert">
+          表单填写未完整或有错误
+        </div>
         <div class="alert alert-danger" id="QQ_and_KOOK-form-alert" style="display: none" role="alert">
           请检查游戏名与QQ号/KOOK用户名，可能与他人重复了
         </div>
-        <form method="post" action="./api/registration" class="row g-3 needs-validation" novalidate>
+        <div class="alert alert-danger" id="time_out" style="display: none" role="alert">
+          验证码超时，请自行刷新页面
+        </div>
+        <form method="post" action="./api/registration" class="row g-3 needs-validation" novalidate @submit.prevent="Submit_form">
           <div class="col-md-4">
             <label for="Game_name" class="form-label">游戏名</label>
             <input
@@ -54,6 +66,8 @@
                     name="username"
                     minlength="4"
                     maxlength="16"
+                    v-model="form.Game_name"
+                    @blur="verify_values($event)"
                     required
             />
           </div>
@@ -65,14 +79,18 @@
                       class="form-control"
                       id="Username"
                       name="account"
-                      minlength="5"
-                      maxlength="12"
+                      ref="Username"
+                      v-model="form.Username"
+                      @input="Username_max"
+                      @blur="verify_values($event)"
                       required
               />
               <select
                       class="form-control"
                       id="Username_mode"
                       name="User_Mode"
+                      v-model="form.Username_mode"
+                      @change="Username_mode_change"
                       required
               >
                 <option disabled selected value="">请选择</option>
@@ -87,6 +105,7 @@
                     class="form-select"
                     id="Age"
                     name="Age"
+                    v-model="form.Age"
                     required
             >
               <option disabled selected value="">请选择</option>
@@ -103,6 +122,7 @@
                     class="form-select"
                     id="playtime"
                     name="playtime"
+                    v-model="form.Playtime"
                     required
             >
               <option disabled selected value="">请选择</option>
@@ -119,6 +139,7 @@
                     class="form-select"
                     id="online_mode"
                     name="online_mode"
+                    v-model="form.Online_mode"
                     required
             >
               <option disabled selected value="">请选择</option>
@@ -134,6 +155,7 @@
                     class="form-select"
                     id="Game_version"
                     name="Game_version"
+                    v-model="form.Game_version"
                     required
             >
               <option disabled selected value="">请选择</option>
@@ -143,8 +165,7 @@
           </div>
           <div class="col-md-max">
             <label for="user_introduce" class="form-label"
-            >自我介绍（<i id="user_introduce_len">0</i>-300）</label
-            >
+            >自我介绍（<i id="user_introduce_len" ref="User_introduce_length_display">0</i>-300）</label>
             <textarea
                     class="form-control"
                     id="user_introduce"
@@ -154,6 +175,9 @@
                     maxlength="300"
                     rows="4"
                     placeholder="请用简短的语言介绍下自己吧~(30-300字)"
+                    v-model="form.User_introduce"
+                    @input="User_introduce"
+                    ref="textarea_User_introduce"
             ></textarea>
           </div>
           <div class="col-12">
@@ -163,6 +187,7 @@
                       type="checkbox"
                       name="Rules"
                       id="invalidCheck"
+                      v-model="form.Rules"
                       required
               />
               <label
@@ -176,9 +201,10 @@
               <div class="invalid-feedback">你必须要同意该规则＞﹏＜</div>
             </div>
           </div>
-          <div class="g-recaptcha" data-sitekey="${Server_token}" data-callback="onButton"></div>
+<!--          验证码-->
+          <div id="g-recaptcha"></div>
           <div class="col-12">
-            <button class="btn btn-primary disabled" id="sub">
+            <button class="btn btn-primary" id="sub">
               提交并下一步
             </button>
           </div>
