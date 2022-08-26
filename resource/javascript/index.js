@@ -123,7 +123,6 @@ window.onload = function() {
                         document.querySelector("#form_error").style.display = "block"
                     }
                 }
-                console.log(form_data)
                 if (Status) {
                     document.querySelector("#form_error").style.display = "none"
                     document.querySelector("#QQ_and_KOOK-form-alert").style.display = "none"

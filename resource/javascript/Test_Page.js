@@ -70,7 +70,7 @@ window.onload = function () {
             // 从接口获取试题
             get_Question_data(){
                 axios
-                    .get("https://pigeon-server.cn:9000/api/test")
+                    .get("/api/question")
                     .catch(function (error){
                         console.log("[获取试题时发生严重错误]",error.message)
                         alert("获取试题失败")
