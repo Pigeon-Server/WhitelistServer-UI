@@ -25,11 +25,11 @@ window.onload = function() {
         },
         created(){
             // 加载验证码
-            this.Get_reCAPTCHA_Key()
+            this.load_reCAPTCHA()
         },
         methods: {
-            // 获取reCAPTCHA Key
-            Get_reCAPTCHA_Key() {
+            // 加载验证码
+            load_reCAPTCHA() {
                 axios
                     .get("/api/reCAPTCHA")
                     .then(res=>{
