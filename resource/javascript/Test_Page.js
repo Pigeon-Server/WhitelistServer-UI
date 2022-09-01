@@ -61,16 +61,16 @@ window.onload = function () {
         el: "#Test_Box",
         data:{
             // 存储试题
-            get_data: {},
+            get_data: null,
             end_time: null,
             Quiz_Time: null
         },
         created(){
-            this.get_Question_data()
+            this.get_Question_data(this)
         },
         methods: {
             // 从接口获取试题
-            get_Question_data(){
+            get_Question_data(that){
                 axios
                     .get("/api/question")
                     .catch(function (error){
@@ -79,19 +79,19 @@ window.onload = function () {
                         location.reload();
                     })
                     .then(function (data){
-                        this.get_data = data.data["Question_data"]
-                        this.Quiz_Time = data.data["Quiz_Time"]
-                        this.end_time = Date.now() + this.Quiz_Time
+                        that.get_data = data.data.Question_data
+                        that.Quiz_Time = data.data.Quiz_Time
+                        that.end_time = Date.now() + that.Quiz_Time
                         setInterval(()=>{
-                            this.countdown()
+                            that.countdown(that)
                         },100)
                         document.querySelector(".test_questions").style.display = "block"
                         document.getElementsByClassName("loading_cover")[0].style.display = "none";
                     })
             },
-            countdown() {
+            countdown(that) {
                 const current_time = Date.now()
-                const time_left = (this.end_time - current_time)
+                const time_left = (that.end_time - current_time)
                 let Minute = parseInt(time_left / 1000 / 60 % 60 )
                 let Second = Math.round(time_left / 1000 % 60)
                 // 加0
