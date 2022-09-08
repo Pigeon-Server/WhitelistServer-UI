@@ -39,6 +39,10 @@ h1,
 .h1 {
   margin-bottom: 0;
 }
+.modal-dialog-scrollable {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
 /* 定义字体 */
 @font-face {
   font-family: Minecraft;
